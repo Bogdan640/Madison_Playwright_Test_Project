@@ -3,6 +3,9 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.Locator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HeaderPage {
     private Page page;
     private Locator logoLink;
@@ -59,16 +62,34 @@ public class HeaderPage {
     }
 
     public void clickNavigationHeadline(String name) {
-        Locator nav = this.navHeadline.and(this.page.getByText(name));
+        Locator nav = this.navHeadline.and(this.page.getByText(name, new Page.GetByTextOptions().setExact(true)));
         nav.click();
     }
 
     public void hoverNavigationHeadline(String name) {
-        Locator nav = this.navHeadline.and(this.page.getByText(name));
+        Locator nav = this.navHeadline.and(this.page.getByText(name, new Page.GetByTextOptions().setExact(true)));
         nav.hover();
     }
 
-    public String getVisibleNavDropdownContent(String name) {
+    public List<String> getNavigationNames() {
+        List<String> navHeadlines = new ArrayList<>();
+        for (Locator nav : this.navHeadline.all()) {
+            navHeadlines.add(nav.textContent());
+        }
+        return navHeadlines;
+    }
+
+    // Navigation tabs which display a dropdown when hovered over
+    public List<String> getHoverableNavigationNames() {
+        List<String> navHeadlines = new ArrayList<>();
+        for (Locator nav : this.navHeadline.all()) {
+            if (nav.innerHTML().contains("has-children"))
+                navHeadlines.add(nav.textContent());
+        }
+        return navHeadlines;
+    }
+
+    public String getVisibleNavDropdownContent() {
         Locator navDropdown = page.getByRole(AriaRole.LIST, new Page.GetByRoleOptions().setDisabled(false)).and(this.navHeadlineDropdown);
         return navDropdown.textContent();
     }
