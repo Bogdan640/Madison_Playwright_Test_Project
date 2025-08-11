@@ -13,6 +13,8 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 public class TestHeader {
     static Playwright playwright;
     static Browser browser;
@@ -56,23 +58,29 @@ public class TestHeader {
     @Test
     void testSearchBar() {
         this.headerPage.navigate();
-        this.headerPage.search("shirt");
-        assertThat(page).hasTitle("Search results for: 'shirt'");
+        String input = "shirt";
+        this.headerPage.search(input);
+        assertThat(page).hasTitle("Search results for: '" + input + "'");
     }
 
     @Test
-    void testClickNavigationHeadline() {
+    void testClickNavigationHeadlines() {
         this.headerPage.navigate();
-        this.headerPage.clickNavigationHeadline("Women");
-        assertThat(page).hasTitle("Women");
+        List<String> navHeadlines = this.headerPage.getNavigationNames();
+        for (String nav : navHeadlines) {
+            this.headerPage.clickNavigationHeadline(nav);
+            assertThat(page).hasTitle(nav);
+        }
     }
 
     @Test
     void testHoverNavigationHeadline() {
         this.headerPage.navigate();
-        String sectionName = "Home & Decor";
-        this.headerPage.hoverNavigationHeadline(sectionName);
-        assertTrue(this.headerPage.getVisibleNavDropdownContent(sectionName).contains(sectionName));
+        List<String> navHeadlines = this.headerPage.getHoverableNavigationNames();
+        for (String nav : navHeadlines) {
+            this.headerPage.hoverNavigationHeadline(nav);
+            assertTrue(this.headerPage.getVisibleNavDropdownContent().contains(nav));
+        }
     }
 
     @AfterAll 
