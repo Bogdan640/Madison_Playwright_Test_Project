@@ -49,28 +49,6 @@ public class ProductPage {
         addToWishlistButton.click();
     }
 
-//    public void addToCart() {
-//        selectMandatoryAttributes();
-//        clickAddToCartButton();
-//    }
-//
-//    public void addToCart(String quantity) {
-//        selectMandatoryAttributes();
-//        setQuantity(quantity);
-//        clickAddToCartButton();
-//    }
-//
-//    public void addToCartWithAllAttributes(String quantity) {
-//        selectMandatoryAttributes();
-//        selectOptionalAttributes();
-//        setQuantity(quantity);
-//        clickAddToCartButton();
-//    }
-//
-//    public void addToWishlist() {
-//        clickAddToWishlistButton();
-//    }
-
     public void selectAvailableMandatoryAttributes() {
         selectAvailableMandatorySwatchAttributes();
         selectAvailableMandatoryDropdownAttributes();
@@ -107,8 +85,7 @@ public class ProductPage {
                 for (int j = 0; j < validOptions.count(); j++) {
                     Locator option = validOptions.nth(j);
                     option.click();
-                    Locator outOfStockButton = page.getByRole(AriaRole.BUTTON,
-                            new Page.GetByRoleOptions().setName("OUT OF STOCK"));
+                    Locator outOfStockButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("OUT OF STOCK"));
                     if (!outOfStockButton.isVisible()) {
                         break;
                     }
