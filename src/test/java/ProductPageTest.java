@@ -9,20 +9,10 @@ import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class ProductPageTest {
-    private static Playwright playwright;
-    private static Browser browser;
-    private Page page;
-    private ProductPage productPage;
+public class ProductPageTest extends BaseTest {
     private static final String SampleProductURL = "http://qa3magento.dev.evozon.com/elizabeth-knit-top-601.html";
 
-    @BeforeEach
-    public void setUp() {
-        playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
-        page = browser.newPage();
-        productPage = new ProductPage(page);
-    }
+
 
     @Test
     public void testNavigateToProductPage() {
@@ -101,16 +91,5 @@ public class ProductPageTest {
 
 
 
-    @AfterEach
-    void tearDown() {
-        if (page != null) {
-            page.close();
-        }
-        if (browser != null) {
-            browser.close();
-        }
-        if (playwright != null) {
-            playwright.close();
-        }
-    }
+
 }

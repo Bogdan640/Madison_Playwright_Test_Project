@@ -9,20 +9,9 @@ import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class LoginTest {
-    private static Playwright playwright;
-    private static Browser browser;
-    private Page page;
-    private LoginPage loginPage;
+public class LoginTest extends BaseTest {
 
-    @BeforeEach
-    public void setUp()
-    {
-        playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
-        page = browser.newPage();
-        loginPage = new LoginPage(page);
-    }
+
 
     @Test
     public void testLoginValidCredentials()
@@ -62,11 +51,6 @@ public class LoginTest {
         assert loginPage.getErrorMessage().equals("Login and password are required.");
     }
 
-    @AfterEach
-    public void teardown()
-    {
-        browser.close();
-        playwright.close();
-    }
+
 }
 
