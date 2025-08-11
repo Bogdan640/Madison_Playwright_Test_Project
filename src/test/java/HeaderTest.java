@@ -15,28 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-public class TestHeader {
-    static Playwright playwright;
-    static Browser browser;
-    Page page;
-    HeaderPage headerPage;
+public class HeaderTest extends BaseTest{
 
-    @BeforeAll
-    static void setupClass() {
-        playwright = Playwright.create();
-        browser = playwright.firefox().launch();
-    }
 
-    @BeforeEach 
-    void setupTest() {
-        BrowserContext context = browser.newContext();
-        page = context.newPage();
-        this.headerPage = new HeaderPage(page);
-    }
 
     @Test
     void testLogo() {
-        this.headerPage.navigate();
+        headerPage.navigate();
         this.headerPage.clickLogo();
         assertThat(page).hasURL("http://qa3magento.dev.evozon.com/");
     }
@@ -83,9 +68,5 @@ public class TestHeader {
         }
     }
 
-    @AfterAll 
-    static void tearDown() {
-        browser.close();
-        playwright.close();
-    }
+
 }
