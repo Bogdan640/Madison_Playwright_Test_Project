@@ -37,7 +37,7 @@ public class LoginTest extends BaseTest {
         loginPage.navigate();
         loginPage.login("", "abcdef123");
 
-        assert loginPage.getEmailClasses().contains("validation-failed");
+        assert loginPage.getValidationAdvice().equals("This is a required field.");
     }
 
     @Test

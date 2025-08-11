@@ -14,6 +14,7 @@ public class LoginPage {
     private Locator passwordField;
     private Locator loginButton;
     private Locator error;
+    private Locator validationAdvice;
 
     public LoginPage(Page page)
     {
@@ -22,6 +23,7 @@ public class LoginPage {
         this.passwordField = page.locator("#pass");
         this.loginButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login"));
         this.error = page.locator(".error-msg");
+        this.validationAdvice = page.locator(".validation-advice");
     }
 
     public void navigate()
@@ -41,13 +43,9 @@ public class LoginPage {
         return error.textContent();
     }
 
-    public List<String> getEmailClasses()
+    public String getValidationAdvice()
     {
-        String classes = emailField.getAttribute("class");
-        if (classes == null || classes.isBlank()) {
-            return Collections.emptyList();
-        }
-        return Arrays.asList(classes.trim().split("\\s+"));
+        return validationAdvice.textContent();
     }
 }
 
