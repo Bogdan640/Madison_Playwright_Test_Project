@@ -13,23 +13,110 @@ public class ProductPage {
     private final Locator quantityInput;
     private final Locator addToCartButton;
     private final Locator addToWishlistButton;
-    private final Locator swatchGroups;
-    private final Locator mandatoryDropdowns;
-    private final Locator optionalSwatchGroups;
-    private final Locator optionalDropdowns;
     private final Locator addToCompareButton;
+
+    private final Locator swatchGroups;
+    private final Locator optionalSwatchGroups;
+
+    private final Locator dropdowns;
+    private final Locator mandatoryDropdowns;
+    private final Locator optionalDropdowns;
+
+    //price
+    private final Locator productCurrentPrice;
+    private final Locator productPriceAsConfigured;
+    private final Locator productStartingPrice;
+    private final Locator productMaximumPrice;
+
+
+
+
+
+    private final Locator productName;
 
     public ProductPage(Page page) {
         this.page = page;
         this.quantityInput = page.locator("#qty");
+        //buttons
         this.addToCartButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add to Cart"));
-        this.addToWishlistButton = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Add to Wishlist"));
-        this.swatchGroups = page.locator("#product-options-wrapper ul[id *='swatch']");
-        this.mandatoryDropdowns = page.locator("#product-options-wrapper select.required-entry[id*='bundle']");
-        this.optionalSwatchGroups = page.locator("#product-options-wrapper select:not(.required-entry)~ul[id *='swatch']");
-        this.optionalDropdowns = page.locator("#product-options-wrapper dd select:not(.required-entry)");
         this.addToCompareButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add to Compare"));
+        this.addToWishlistButton = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Add to Wishlist"));
+
+        //attributes
+
+        //Swatches
+        this.optionalSwatchGroups = page.locator("#product-options-wrapper select:not(.required-entry)~ul[id *='swatch']");
+        this.swatchGroups = page.locator("#product-options-wrapper ul[id *='swatch']");
+
+        //dropdowns
+        this.dropdowns = page.getByText("Choose a selection...");
+        this.mandatoryDropdowns = page.locator("#product-options-wrapper select.required-entry[id*='bundle']");
+        this.optionalDropdowns = page.locator("#product-options-wrapper dd select:not(.required-entry)");
+
+
+        //price
+        this.productCurrentPrice = page.locator("[id^=product-price] .price").first();
+        this.productPriceAsConfigured = page.getByText("Price as configured:");
+        this.productStartingPrice = page.getByText("From:");
+        this.productMaximumPrice = page.getByText("To:");
+
+
+
+        this.productName = page.locator(".product-shop .product-name");
     }
+
+
+    public boolean hasDropdowns() {
+        return dropdowns.count() > 0;
+    }
+
+    public boolean hasSwatchGroups() {
+        return swatchGroups.count() > 0;
+    }
+
+
+    //price section
+    public String getStartingPrice() {
+        if (productCurrentPrice.count() > 0){
+            return productCurrentPrice.innerText();
+        }
+        else if(productStartingPrice.count() > 0){
+            return productStartingPrice.innerText();
+        }
+        else{
+            return null;
+        }
+    }
+
+    public String getMaximumPrice() {
+        if (productCurrentPrice.count() > 0){
+            return productCurrentPrice.innerText();
+        }
+        else if(productMaximumPrice.count() > 0){
+            return productMaximumPrice.innerText();
+        }
+        else{
+            return null;
+        }
+    }
+
+    public String getPrice(){
+        if (productCurrentPrice.count() > 0){
+            return productCurrentPrice.innerText();
+        }
+        else if(productPriceAsConfigured.count() > 0){
+            return productPriceAsConfigured.innerText();
+        }
+        else{
+            return null;
+        }
+
+    }
+
+    public String getProductName(){
+        return productName.textContent();
+    }
+
 
     public void navigateToProductPage(String productUrl) {
         page.navigate(productUrl);
@@ -41,6 +128,7 @@ public class ProductPage {
         }
     }
 
+
     public void clickAddToCartButton() {
         addToCartButton.click();
     }
@@ -48,6 +136,16 @@ public class ProductPage {
     public void clickAddToWishlistButton() {
         addToWishlistButton.click();
     }
+
+    public void clickAddToCompareButton() {
+        addToCompareButton.click();
+    }
+
+    public int dropdownsCount() {
+        return dropdowns.count();
+    }
+
+
 
     public void selectAvailableMandatoryAttributes() {
         selectAvailableMandatorySwatchAttributes();
@@ -143,6 +241,8 @@ public class ProductPage {
             }
         }
     }
+
+
 
 
 
