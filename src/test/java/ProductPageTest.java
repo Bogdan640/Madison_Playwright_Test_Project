@@ -14,12 +14,12 @@ public class ProductPageTest {
     private static Browser browser;
     private Page page;
     private ProductPage productPage;
-    private static final String SampleProductURL = "http://qa3magento.dev.evozon.com/elizabeth-knit-top.html";
+    private static final String SampleProductURL = "http://qa3magento.dev.evozon.com/elizabeth-knit-top-601.html";
 
     @BeforeEach
     public void setUp() {
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
         page = browser.newPage();
         productPage = new ProductPage(page);
     }
@@ -31,7 +31,6 @@ public class ProductPageTest {
         assertThat(page).hasURL(SampleProductURL);
 
     }
-
 
 
 
@@ -103,8 +102,15 @@ public class ProductPageTest {
 
 
     @AfterEach
-    public void teardown() {
-        browser.close();
-        playwright.close();
+    void tearDown() {
+        if (page != null) {
+            page.close();
+        }
+        if (browser != null) {
+            browser.close();
+        }
+        if (playwright != null) {
+            playwright.close();
+        }
     }
 }
