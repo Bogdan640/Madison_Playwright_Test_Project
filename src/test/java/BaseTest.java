@@ -1,8 +1,5 @@
 import com.microsoft.playwright.*;
-import org.example.pages.HeaderPage;
-import org.example.pages.LoginPage;
-import org.example.pages.ProductPage;
-import org.example.pages.RegisterPage;
+import org.example.pages.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -17,6 +14,9 @@ public abstract class BaseTest {
     protected ProductPage productPage;
     protected HeaderPage headerPage;
     protected RegisterPage registerPage;
+    protected ComparePage comparePage;
+    protected ProductListPage productListPage;
+
 
     @BeforeEach
     void setUp() {
@@ -31,6 +31,8 @@ public abstract class BaseTest {
         productPage = new ProductPage(page);
         headerPage = new HeaderPage(page);
         registerPage = new RegisterPage(page);
+        comparePage = new ComparePage(page);
+        productListPage = new ProductListPage(page);
     }
 
     @AfterEach
