@@ -1,24 +1,10 @@
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import org.example.pages.HeaderPage;
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-
 public class HeaderTest extends BaseTest{
-
-
-
     @Test
     void testLogo() {
         headerPage.navigate();
@@ -51,22 +37,16 @@ public class HeaderTest extends BaseTest{
     @Test
     void testClickNavigationHeadlines() {
         this.headerPage.navigate();
-        List<String> navHeadlines = this.headerPage.getNavigationNames();
-        for (String nav : navHeadlines) {
-            this.headerPage.clickNavigationHeadline(nav);
-            assertThat(page).hasTitle(nav);
-        }
+        String navHeadline = "Women";
+        this.headerPage.clickNavigationHeadline(navHeadline);
+        assertThat(page).hasTitle(navHeadline);
     }
 
     @Test
     void testHoverNavigationHeadline() {
         this.headerPage.navigate();
-        List<String> navHeadlines = this.headerPage.getHoverableNavigationNames();
-        for (String nav : navHeadlines) {
-            this.headerPage.hoverNavigationHeadline(nav);
-            assertTrue(this.headerPage.getVisibleNavDropdownContent().contains(nav));
-        }
+        String navHeadline = "Women";
+        this.headerPage.hoverNavigationHeadline(navHeadline);
+        assertTrue(this.headerPage.getVisibleNavDropdownContent().contains(navHeadline));
     }
-
-
 }

@@ -1,4 +1,3 @@
-
 import com.microsoft.playwright.*;
 import org.example.pages.HeaderPage;
 import org.example.pages.LoginPage;
@@ -19,7 +18,6 @@ public abstract class BaseTest {
     protected HeaderPage headerPage;
     protected RegisterPage registerPage;
 
-
     @BeforeEach
     void setUp() {
         playwright = Playwright.create();
@@ -27,18 +25,13 @@ public abstract class BaseTest {
                 new BrowserType.LaunchOptions().setHeadless(false)
         );
 
-        //browser = playwright.firefox().launch();
-
         page = browser.newPage();
 
         loginPage = new LoginPage(page);
         productPage = new ProductPage(page);
         headerPage = new HeaderPage(page);
         registerPage = new RegisterPage(page);
-
-
     }
-
 
     @AfterEach
     void tearDown() {
