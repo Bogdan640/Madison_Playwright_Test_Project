@@ -1,15 +1,8 @@
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
-import org.example.pages.ProductPage;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class ProductPageTest extends BaseTest {
+public class ProductTest extends BaseTest {
     private static final String SampleProductURL = "http://qa3magento.dev.evozon.com/elizabeth-knit-top-601.html";
 
 
@@ -25,7 +18,7 @@ public class ProductPageTest extends BaseTest {
 
 
     @Test
-    public void testSelectMandatoryAttributes() {
+    public void testSelectValidMandatoryAttributes() {
 
         productPage.navigateToProductPage(SampleProductURL);
         if (page.locator("#product-options-wrapper ul[id *='swatch']").count() > 0 ||
@@ -37,7 +30,7 @@ public class ProductPageTest extends BaseTest {
     }
 
     @Test
-    public void testSelectOptionalAttributes() {
+    public void testSelectValidOptionalAttributes() {
         productPage.navigateToProductPage(SampleProductURL);
 
         if (page.locator("#product-options-wrapper select:not(.required-entry)~ul[id *='swatch']").count() > 0 ||
@@ -88,6 +81,12 @@ public class ProductPageTest extends BaseTest {
         productPage.clickAddToCartButton();
         assertThat(page).hasURL(SampleProductURL);
     }
+
+
+
+
+
+
 
 
 
