@@ -8,6 +8,8 @@ import com.microsoft.playwright.options.SelectOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
 public class ProductPage {
     private Page page;
     private final Locator quantityInput;
@@ -29,6 +31,10 @@ public class ProductPage {
     private final Locator productMaximumPrice;
 
 
+    //success message for add to compare list
+    private final Locator getAddToCompareSuccessMsg;
+
+
 
 
 
@@ -39,7 +45,7 @@ public class ProductPage {
         this.quantityInput = page.locator("#qty");
         //buttons
         this.addToCartButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add to Cart"));
-        this.addToCompareButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add to Compare"));
+        this.addToCompareButton = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Add to Compare"));
         this.addToWishlistButton = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Add to Wishlist"));
 
         //attributes
@@ -61,6 +67,7 @@ public class ProductPage {
         this.productMaximumPrice = page.getByText("To:");
 
 
+        this.getAddToCompareSuccessMsg = page.getByText("has been added to comparison list");
 
         this.productName = page.locator(".product-shop .product-name");
     }
@@ -139,6 +146,7 @@ public class ProductPage {
 
     public void clickAddToCompareButton() {
         addToCompareButton.click();
+        assertThat(getAddToCompareSuccessMsg).isVisible();
     }
 
     public int dropdownsCount() {
