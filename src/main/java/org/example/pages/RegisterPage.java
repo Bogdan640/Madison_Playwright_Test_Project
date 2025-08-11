@@ -12,6 +12,9 @@ public class RegisterPage {
     Locator passwordField;
     Locator confirmPasswordField;
     Locator registerButton;
+    Locator succesMessage;
+    Locator errorMessage;
+    Locator validationAdvice;
 
     public RegisterPage(Page page)
     {
@@ -22,6 +25,10 @@ public class RegisterPage {
         this.emailField = page.locator("#email_address");
         this.passwordField = page.locator("#password");
         this.confirmPasswordField = page.locator("#confirmation");
+        this.registerButton = page.locator("button[title=\"Register\"]");
+        this.succesMessage = page.locator(".success-msg");
+        this.errorMessage = page.locator(".error-msg");
+        this.validationAdvice = page.locator(".validation-advice");
     }
 
     public void navigate()
@@ -43,4 +50,20 @@ public class RegisterPage {
         passwordField.fill(password);
         confirmPasswordField.fill(confirmPassword);
     }
+
+    public String getSuccessMessage()
+    {
+        return succesMessage.textContent();
+    }
+
+    public String getErrorMessage()
+    {
+        return errorMessage.textContent();
+    }
+
+    public String getValidationAdvice()
+    {
+        return validationAdvice.first().textContent();
+    }
+
 }
