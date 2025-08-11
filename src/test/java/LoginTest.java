@@ -11,8 +11,6 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 public class LoginTest extends BaseTest {
 
-
-
     @Test
     public void testLoginValidCredentials()
     {
