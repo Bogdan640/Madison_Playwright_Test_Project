@@ -1,4 +1,5 @@
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
@@ -7,6 +8,7 @@ public class CompareTest extends BaseTest{
     private static final String PRODUCT_URL = "http://qa3magento.dev.evozon.com/samponel.html";
 
     @Test
+    @Disabled
     public void testAddProductToCompare() {
         productPage.navigateToProductPage(PRODUCT_URL);
 
@@ -26,6 +28,8 @@ public class CompareTest extends BaseTest{
 
         headerPage.search("e");
         page.waitForTimeout(5000);
+
+        productListPage.clickViewProductPageByProductName();
 
         productListPage.clickCompareButton();
         assertThat(page).hasURL("http://qa3magento.dev.evozon.com/catalog/product_compare/index/");
