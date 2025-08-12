@@ -6,9 +6,12 @@ import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.SelectOption;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static java.util.Collections.replaceAll;
 
 public class ProductPage {
     private Page page;
@@ -21,8 +24,12 @@ public class ProductPage {
     private final Locator optionalSwatchGroups;
 
     private final Locator dropdowns;
+    private final Locator dropdowns_type_2;
     private final Locator mandatoryDropdowns;
     private final Locator optionalDropdowns;
+
+
+    private final Locator textAreaAttribute;
 
     //price
     private final Locator productCurrentPrice;
@@ -33,6 +40,9 @@ public class ProductPage {
 
     //success message for add to compare list
     private final Locator getAddToCompareSuccessMsg;
+
+    //current product attribute list
+    Map<String, String> selectedAttributes = new HashMap<>();
 
 
 
@@ -56,8 +66,13 @@ public class ProductPage {
 
         //dropdowns
         this.dropdowns = page.getByText("Choose a selection...");
+        this.dropdowns_type_2 = page.getByText("PLease Select");
         this.mandatoryDropdowns = page.locator("#product-options-wrapper select.required-entry[id*='bundle']");
         this.optionalDropdowns = page.locator("#product-options-wrapper dd select:not(.required-entry)");
+
+        //textArea
+
+        this.textAreaAttribute = page.locator("textarea[id ^= 'option']");
 
 
         //price
@@ -73,8 +88,13 @@ public class ProductPage {
     }
 
 
+    public Map<String, String> getSelectedAttributes() {
+        return selectedAttributes;
+    }
+
+
     public boolean hasDropdowns() {
-        return dropdowns.count() > 0;
+        return dropdowns.count() + dropdowns_type_2.count() > 0;
     }
 
     public boolean hasSwatchGroups() {
@@ -154,6 +174,16 @@ public class ProductPage {
     }
 
 
+    private void selectTextAreaAttribute() {
+        try{
+            if (textAreaAttribute.isVisible() && textAreaAttribute.count() > 0) {
+                textAreaAttribute.fill("Some sample text");
+            }
+        }catch (Exception e){
+            System.out.println("There is no text area attribute");
+        }
+    }
+
 
     public void selectAvailableMandatoryAttributes() {
         selectAvailableMandatorySwatchAttributes();
@@ -163,6 +193,7 @@ public class ProductPage {
     public void selectAvailableOptionalAttributes() {
         selectAvailableOptionalSwatchAttributes();
         selectAvailableOptionalDropdownAttributes();
+        selectTextAreaAttribute();
     }
 
     private void selectAvailableMandatorySwatchAttributes() {
@@ -183,22 +214,60 @@ public class ProductPage {
         }
     }
 
-    private void SelectAvailableSwatchAttributes(Locator SwatchGroups) {
-        if(SwatchGroups.count() > 0) {
-            for (int i = 0; i < SwatchGroups.count(); i++) {
-                Locator swatchGroup = SwatchGroups.nth(i);
+    private void SelectAvailableSwatchAttributes(Locator swatchGroups) {
+        if (swatchGroups.count() > 0) {
+            for (int i = 0; i < swatchGroups.count(); i++) {
+                Locator swatchGroup = swatchGroups.nth(i);
+
+                String labelText = "";
+                try {
+                    labelText = swatchGroup
+                            .locator("xpath=preceding::dt[1]/label")
+                            .first()
+                            .innerText()
+                            .replace("*", "")
+                            .replaceAll("\\s+", " ")
+                            .replaceAll(":", "")
+                            .trim();
+                } catch (Exception e) {
+                    continue;
+                }
+
+                // Skip if already selected this attribute
+                if (selectedAttributes.containsKey(labelText)) {
+                    continue;
+                }
+
+                // Get all available options for this swatch
                 Locator validOptions = swatchGroup.locator("li:not(.not-available)");
+
                 for (int j = 0; j < validOptions.count(); j++) {
                     Locator option = validOptions.nth(j);
+
+                    // Get the option name
+                    Locator swatchNameLocator = option.locator(">a");
+                    String swatchName = swatchNameLocator.getAttribute("title");
+                    if (swatchName == null || swatchName.isEmpty()) {
+                        swatchName = swatchNameLocator.innerText().trim();
+                    }
+                    swatchName = swatchName.replaceAll("\\s+", " ").trim();
+
                     option.click();
-                    Locator outOfStockButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("OUT OF STOCK"));
+                    Locator outOfStockButton = page.getByRole(
+                            AriaRole.BUTTON,
+                            new Page.GetByRoleOptions().setName("OUT OF STOCK")
+                    );
+
                     if (!outOfStockButton.isVisible()) {
+                        selectedAttributes.put(labelText, swatchName);
                         break;
                     }
                 }
             }
         }
     }
+
+
 
 
     private void selectAvailableMandatoryDropdownAttributes() {
@@ -212,6 +281,7 @@ public class ProductPage {
     private void selectAvailableOptionalDropdownAttributes() {
         try {
             SelectAvailableDropdownAttributes(optionalDropdowns);
+            SelectAvailableDropdownAttributes(dropdowns_type_2);
         } catch (Exception e) {
             System.out.println("No optional dropdown attributes found");
         }
@@ -221,9 +291,20 @@ public class ProductPage {
         if (Dropdowns.count() > 0) {
             for (int i = 0; i < Dropdowns.count(); i++) {
                 Locator dropdown = Dropdowns.nth(i);
+
+                // Get label text
+                String labelText = dropdown
+                        .locator("xpath=ancestor::dd/preceding-sibling::dt[1]/label")
+                        .textContent()
+                        .trim()
+                        .replace("*", "")
+                        .replaceAll("\\s+", " ")
+                        .replaceAll(":", "")
+                        .trim();
+
                 dropdown.click();
 
-                List<String> valueList = new ArrayList<>();
+                List<Locator> validOptions = new ArrayList<>();
                 Locator options = dropdown.locator("option");
 
                 for (int j = 0; j < options.count(); j++) {
@@ -232,26 +313,49 @@ public class ProductPage {
                     String optionValue = option.getAttribute("value");
                     String optionClass = option.getAttribute("class");
 
-                    if(optionText.matches(".*Choose.* | .*Select.*") ||
+                    if (optionText.matches(".*Choose.*|.*Select.*") ||
                             optionValue == null || optionValue.isEmpty() ||
-                            (optionClass != null && optionClass.contains("not-available"))) continue;
+                            (optionClass != null && optionClass.contains("not-available"))) {
+                        continue;
+                    }
 
-                    valueList.add(optionValue);
+                    validOptions.add(option);
                 }
 
-                for (String value : valueList) {
-                    dropdown.selectOption(new SelectOption().setValue(value));
+                // Pick the first available option
+                for (Locator option : validOptions) {
+                    String valueAttr = option.getAttribute("value");
+                    String textAttr  = option.textContent().trim();
+
+                    dropdown.selectOption(new SelectOption().setValue(valueAttr));
+
                     Locator outOfStock = page.getByRole(AriaRole.BUTTON,
                             new Page.GetByRoleOptions().setName("OUT OF STOCK"));
                     if (outOfStock.isVisible()) continue;
+
+                    // Locate the quantity input related to this dropdown
+                    Locator qtyInput = dropdown.locator("xpath=following::input[contains(@id,'-qty-input')][1]");
+                    String qtyValue = "1"; // default quantity
+                    if (qtyInput.count() > 0) {
+                        String rawQty = qtyInput.inputValue().trim();
+                        if (!rawQty.isEmpty()) {
+                            qtyValue = rawQty;
+                        }
+                    }
+
+                    // Store human-readable text with quantity appended
+                    selectedAttributes.put(labelText, qtyValue + " x " + textAttr);
                     break;
                 }
             }
         }
     }
 
-
-
-
-
 }
+
+
+
+
+
+
+

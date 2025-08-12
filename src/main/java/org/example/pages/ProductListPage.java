@@ -17,4 +17,6 @@ public class ProductListPage{
     public void clickCompareButton() {
         addToCompareButton.click();
     }
+
+    //TODO: create click product
 }
