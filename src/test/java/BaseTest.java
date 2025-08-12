@@ -2,9 +2,6 @@ import com.microsoft.playwright.*;
 import org.example.pages.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
-
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public abstract class BaseTest {
     protected Playwright playwright;
@@ -16,7 +13,7 @@ public abstract class BaseTest {
     protected RegisterPage registerPage;
     protected ComparePage comparePage;
     protected ProductListPage productListPage;
-
+    protected ShoppingCartPage shoppingCartPage;
 
     @BeforeEach
     void setUp() {
@@ -33,6 +30,7 @@ public abstract class BaseTest {
         registerPage = new RegisterPage(page);
         comparePage = new ComparePage(page);
         productListPage = new ProductListPage(page);
+        shoppingCartPage = new ShoppingCartPage(page);
     }
 
     @AfterEach
