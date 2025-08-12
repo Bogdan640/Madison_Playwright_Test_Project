@@ -11,7 +11,7 @@ public class ShoppingCartPage {
     private Page page;
 
     private Locator lastCartItem;
-    
+
     private Locator emptyCartButton;
     private Locator updateShoppingCartButton;
     private Locator continueShoppingButton;
@@ -32,20 +32,16 @@ public class ShoppingCartPage {
         this.topProceedToCheckoutButton = page.locator("ul.checkout-types.top button.btn-checkout");
         this.bottomProceedToCheckoutButton = page.locator("ul.checkout-types.bottom button.btn-checkout");
 
-        this.cartSubtotal = page.locator("table#shopping-cart-totals-table tbody tr")
-            .and(page.getByText("Subtotal", new Page.GetByTextOptions().setExact(false)))
+        this.cartSubtotal = page.locator("table#shopping-cart-totals-table tbody tr:has-text(\"Subtotal\"")
             .locator("span.price");
 
-        this.cartShippingTax = page.locator("table#shopping-cart-totals-table tbody tr")
-            .and(page.getByText("Shipping & Handling", new Page.GetByTextOptions().setExact(false)))
+        this.cartShippingTax = page.locator("table#shopping-cart-totals-table tbody tr:has-text(\"Shipping & Handling\")")
             .locator("span.price");
 
-        this.cartTax = page.locator("table#shopping-cart-totals-table tbody tr span.price")
-            .and(page.getByText("Tax", new Page.GetByTextOptions().setExact(false)))
+        this.cartTax = page.locator("table#shopping-cart-totals-table tbody tr:has-text(\"Tax\")")
             .locator("span.price");
-
-        this.cartGrandTotal = page.locator("table#shopping-cart-totals-table tfoot tr span.price")
-            .and(page.getByText("Subtotal", new Page.GetByTextOptions().setExact(false)))
+        
+        this.cartGrandTotal = page.locator("table#shopping-cart-totals-table tfoot tr:has-text(\"Grand Total\")")
             .locator("span.price");
     }
 
