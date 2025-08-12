@@ -52,11 +52,13 @@ public class ProductTest extends BaseTest {
     @Test
     public void testAddToCartWithMandatoryAttributesAndQuantity() {
 
-        productPage.navigateToProductPage(SampleProductURL);
+        productPage.navigateToProductPage("http://qa3magento.dev.evozon.com/camera-travel-set.html");
         productPage.selectAvailableMandatoryAttributes();
+        productPage.selectAvailableOptionalAttributes();
         productPage.setQuantity("2");
         productPage.clickAddToCartButton();
         assertThat(page).hasURL("http://qa3magento.dev.evozon.com/checkout/cart/");
+        System.out.println(productPage.getSelectedAttributes());
     }
 
 
