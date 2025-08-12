@@ -21,8 +21,12 @@ public class ProductPage {
     private final Locator optionalSwatchGroups;
 
     private final Locator dropdowns;
+    private final Locator dropdowns_type_2;
     private final Locator mandatoryDropdowns;
     private final Locator optionalDropdowns;
+
+
+    private final Locator textAreaAttribute;
 
     //price
     private final Locator productCurrentPrice;
@@ -56,8 +60,13 @@ public class ProductPage {
 
         //dropdowns
         this.dropdowns = page.getByText("Choose a selection...");
+        this.dropdowns_type_2 = page.getByText("PLease Select");
         this.mandatoryDropdowns = page.locator("#product-options-wrapper select.required-entry[id*='bundle']");
         this.optionalDropdowns = page.locator("#product-options-wrapper dd select:not(.required-entry)");
+
+        //textArea
+
+        this.textAreaAttribute = page.locator("textarea[id ^= 'option']");
 
 
         //price
@@ -74,7 +83,7 @@ public class ProductPage {
 
 
     public boolean hasDropdowns() {
-        return dropdowns.count() > 0;
+        return dropdowns.count() + dropdowns_type_2.count() > 0;
     }
 
     public boolean hasSwatchGroups() {
@@ -154,6 +163,16 @@ public class ProductPage {
     }
 
 
+    private void selectTextAreaAttribute() {
+        try{
+            if (textAreaAttribute.isVisible() && textAreaAttribute.count() > 0) {
+                textAreaAttribute.fill("Some sample text");
+            }
+        }catch (Exception e){
+            System.out.println("There is no text area attribute");
+        }
+    }
+
 
     public void selectAvailableMandatoryAttributes() {
         selectAvailableMandatorySwatchAttributes();
@@ -163,6 +182,7 @@ public class ProductPage {
     public void selectAvailableOptionalAttributes() {
         selectAvailableOptionalSwatchAttributes();
         selectAvailableOptionalDropdownAttributes();
+        selectTextAreaAttribute();
     }
 
     private void selectAvailableMandatorySwatchAttributes() {
@@ -212,6 +232,7 @@ public class ProductPage {
     private void selectAvailableOptionalDropdownAttributes() {
         try {
             SelectAvailableDropdownAttributes(optionalDropdowns);
+            SelectAvailableDropdownAttributes(dropdowns_type_2);
         } catch (Exception e) {
             System.out.println("No optional dropdown attributes found");
         }
@@ -249,6 +270,8 @@ public class ProductPage {
             }
         }
     }
+
+
 
 
 
