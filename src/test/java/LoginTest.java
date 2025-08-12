@@ -1,32 +1,34 @@
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.AriaRole;
 import org.example.pages.LoginPage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class LoginTest extends BaseTest {
-
-    @Test
-    public void testLoginValidCredentials()
+    @ParameterizedTest
+    @CsvFileSource(resources = "/validlogindata.csv", numLinesToSkip = 1)
+    public void parameterizedTestLoginValidCredentials(String email, String password)
     {
         page.setDefaultTimeout(100000);
 
         loginPage.navigate();
-        loginPage.login("email@email.com", "abcdef123");
+        loginPage.login(email, password);
 
         assertThat(page).hasURL("http://qa3magento.dev.evozon.com/customer/account/");
     }
 
-    @Test
-    public void testLoginInvalidCredentials()
+    @ParameterizedTest
+    @CsvFileSource(resources = "/invalidlogindata.csv", numLinesToSkip = 1)
+    public void testLoginInvalidCredentials(String email, String password)
     {
         loginPage.navigate();
-        loginPage.login("email@email.com", "abc123");
+        loginPage.login(email, password);
 
         assert loginPage.getErrorMessage().equals("Invalid login or password.");
     }
@@ -44,10 +46,14 @@ public class LoginTest extends BaseTest {
     public void testLoginEmptyPassword()
     {
         loginPage.navigate();
-        loginPage.login("email@email.com", "");
+        loginPage.login("email.com", "");
+
+        Locator locator = page.getByRole(AriaRole.ALERT);
+        System.out.println(locator.textContent());
 
         assert loginPage.getErrorMessage().equals("Login and password are required.");
     }
+
 
 
 }
