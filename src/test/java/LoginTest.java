@@ -46,10 +46,7 @@ public class LoginTest extends BaseTest {
     public void testLoginEmptyPassword()
     {
         loginPage.navigate();
-        loginPage.login("email.com", "");
-
-        Locator locator = page.getByRole(AriaRole.ALERT);
-        System.out.println(locator.textContent());
+        loginPage.login("email@email.com", "");
 
         assert loginPage.getErrorMessage().equals("Login and password are required.");
     }
