@@ -2,11 +2,21 @@ import com.microsoft.playwright.*;
 import org.example.pages.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestInstance;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public abstract class BaseTest {
     protected Playwright playwright;
     protected Browser browser;
     protected Page page;
+    protected BrowserContext context;
     protected LoginPage loginPage;
     protected ProductPage productPage;
     protected HeaderPage headerPage;
@@ -31,12 +41,39 @@ public abstract class BaseTest {
         comparePage = new ComparePage(page);
         productListPage = new ProductListPage(page);
         shoppingCartPage = new ShoppingCartPage(page);
+
+
+        context = browser.newContext();
+
+        context.tracing().start(new Tracing.StartOptions()
+                .setScreenshots(true)
+                .setSnapshots(true));
     }
 
     @AfterEach
     void tearDown() {
-        if (page != null) {
-            page.close();
+        try {
+            byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
+            io.qameta.allure.Allure.addAttachment(
+                    "Screenshot",
+                    "image/png",
+                    new java.io.ByteArrayInputStream(screenshot),
+                    ".png"
+            );
+        } catch (Exception e) {
+            System.err.println("Failed to take screenshot: " + e.getMessage());
+        }
+        if (context != null) {
+            try {
+                Path tracePath = Paths.get("target/traces", getClass().getSimpleName() + "-" +
+                        System.currentTimeMillis() + ".zip");
+                Files.createDirectories(tracePath.getParent());
+                context.tracing().stop(new Tracing.StopOptions().setPath(tracePath));
+            } catch (Exception e) {
+                System.err.println("Failed to save trace: " + e.getMessage());
+            }
+
+            context.close();
         }
         if (browser != null) {
             browser.close();
