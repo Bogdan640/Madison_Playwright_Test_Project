@@ -3,14 +3,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 
 import java.util.Map;
 
 public class AddToCartTest extends BaseTest {
-    @Test
-    public void testProductPageToCartFlow() {
-        this.productPage.navigateToProductPage("http://qa3magento.dev.evozon.com/camera-travel-set.html");
+    
+    @ParameterizedTest
+    @CsvFileSource(resources = "/validproducturldata.csv", numLinesToSkip = 1)
+    public void testProductPageToCartFlow(String productURL) {
+        this.productPage.navigateToProductPage(productURL);
         productPage.selectAvailableMandatoryAttributes();
         productPage.selectAvailableOptionalAttributes();
         productPage.setQuantity("2");
