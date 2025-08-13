@@ -68,7 +68,7 @@ public class RegisterTest extends BaseTest{
         assertThat(page).hasURL("http://qa3magento.dev.evozon.com/customer/account/index/");
         assert registerPage.getSuccessMessage().equals("Thank you for registering with Madison Island.");
 
-        generateUsers("C:\\Users\\bibis\\IdeaProjects\\PlaywrightProject\\src\\main\\resources\\validregisterdata.csv");
+        generateUsers("src/main/resources/validregisterdata.csv");
     }
 
     @ParameterizedTest
