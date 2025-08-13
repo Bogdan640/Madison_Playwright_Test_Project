@@ -23,6 +23,7 @@ public abstract class BaseTest {
     protected RegisterPage registerPage;
     protected ComparePage comparePage;
     protected ProductListPage productListPage;
+    protected CheckoutPage checkoutPage;
 
 
     @BeforeEach
@@ -40,6 +41,7 @@ public abstract class BaseTest {
         registerPage = new RegisterPage(page);
         comparePage = new ComparePage(page);
         productListPage = new ProductListPage(page);
+        checkoutPage = new CheckoutPage(page);
 
 
         context = browser.newContext();
