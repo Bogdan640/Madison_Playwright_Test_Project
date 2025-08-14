@@ -66,7 +66,7 @@ public class ProductPage {
 
         //dropdowns
         this.dropdowns = page.getByText("Choose a selection...");
-        this.dropdowns_type_2 = page.getByText("PLease Select");
+        this.dropdowns_type_2 = page.getByText("Please Select");
         this.mandatoryDropdowns = page.locator("#product-options-wrapper select.required-entry[id*='bundle']");
         this.optionalDropdowns = page.locator("#product-options-wrapper dd select:not(.required-entry)");
 
@@ -77,14 +77,14 @@ public class ProductPage {
 
         //price
         this.productCurrentPrice = page.locator("[id^=product-price] .price").first();
-        this.productPriceAsConfigured = page.getByText("Price as configured:");
-        this.productStartingPrice = page.getByText("From:");
-        this.productMaximumPrice = page.getByText("To:");
+        this.productPriceAsConfigured = page.locator("[id^='product-price']").first();
+        this.productStartingPrice = page.locator(".price-from .price");
+        this.productMaximumPrice = page.locator(".price-to .price");
 
 
         this.getAddToCompareSuccessMsg = page.getByText("has been added to comparison list");
 
-        this.productName = page.locator(".product-shop .product-name");
+        this.productName = page.locator(".product-shop .product-name span");
     }
 
 
@@ -144,9 +144,12 @@ public class ProductPage {
         return productName.textContent();
     }
 
-
     public void navigateToProductPage(String productUrl) {
         page.navigate(productUrl);
+    }
+
+    public int getProductQuantity() {
+        return Integer.parseInt(quantityInput.inputValue());
     }
 
     public void setQuantity(String quantity) {
@@ -154,7 +157,6 @@ public class ProductPage {
             quantityInput.fill(quantity);
         }
     }
-
 
     public void clickAddToCartButton() {
         addToCartButton.click();
@@ -178,6 +180,8 @@ public class ProductPage {
         try{
             if (textAreaAttribute.isVisible() && textAreaAttribute.count() > 0) {
                 textAreaAttribute.fill("Some sample text");
+                Locator label = textAreaAttribute.locator("xpath=preceding::dt[1]/label");
+                selectedAttributes.put(label.innerText(), "Some sample text");
             }
         }catch (Exception e){
             System.out.println("There is no text area attribute");
@@ -344,7 +348,7 @@ public class ProductPage {
                     }
 
                     // Store human-readable text with quantity appended
-                    selectedAttributes.put(labelText, qtyValue + " x " + textAttr);
+                    selectedAttributes.put(labelText, qtyValue + " x " + textAttr.replaceAll("[\\s\\u00A0]+", " ").replaceAll("\\+", ""));
                     break;
                 }
             }

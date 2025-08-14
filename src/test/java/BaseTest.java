@@ -29,7 +29,8 @@ public abstract class BaseTest {
     protected ComparePage comparePage;
     protected ProductListPage productListPage;
     protected CheckoutPage checkoutPage;
-
+    protected ShoppingCartPage shoppingCartPage;
+  
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static final Random random = new Random();
 
@@ -95,6 +96,7 @@ public abstract class BaseTest {
         comparePage = new ComparePage(page);
         productListPage = new ProductListPage(page);
         checkoutPage = new CheckoutPage(page);
+        shoppingCartPage = new ShoppingCartPage(page);
 
 
         context = browser.newContext();
