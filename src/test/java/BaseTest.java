@@ -30,6 +30,7 @@ public abstract class BaseTest {
     protected ProductListPage productListPage;
     protected CheckoutPage checkoutPage;
     protected ShoppingCartPage shoppingCartPage;
+  
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static final Random random = new Random();
 
